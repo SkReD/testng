@@ -114,9 +114,6 @@ public class Parameters {
   /**
    * @param optionalValues TODO
    * @param finder TODO
-   * @param parameterAnnotations TODO
-   * @param m
-   * @param instance
    * @return An array of parameters suitable to invoke this method, possibly
    * picked from the property file
    */
@@ -415,7 +412,7 @@ public class Parameters {
      * sets of parameters for this method
      */
     DataProviderHolder dataProviderHolder =
-        findDataProvider(testMethod.getTestClass().getRealClass(),
+        findDataProvider(testMethod.getMethod().getDeclaringClass(),
             testMethod.getConstructorOrMethod(), annotationFinder);
 
     if (null != dataProviderHolder) {

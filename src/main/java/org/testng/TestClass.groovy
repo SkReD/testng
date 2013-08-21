@@ -185,7 +185,8 @@ class TestClass extends NoOpTestClass implements ITestClass {
     List<ITestNGMethod> vResult = Lists.newArrayList();
     for (ITestNGMethod tm : methods) {
       Method m = tm.getMethod();
-      if (m.getDeclaringClass().isAssignableFrom(m_testClass)) {
+
+      if (m.getDeclaringClass().isAssignableFrom(m_testClass) || isMixedWith(m.getDeclaringClass())) {
         for (Object o : m_iClass.getInstances(false)) {
           log(4, "Adding method " + tm + " on TestClass " + m_testClass);
           vResult.add(new TestNGMethod(/* tm.getRealClass(), */ m, m_annotationFinder, m_xmlTest,

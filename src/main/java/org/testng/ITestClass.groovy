@@ -132,4 +132,6 @@ public interface ITestClass extends IClass, Serializable {
    * @return all @Configuration methods that should be invoked after certain groups.
    */
   ITestNGMethod[] getAfterGroupsMethods();
+
+  boolean isMixedWith(Class clazz);
 }

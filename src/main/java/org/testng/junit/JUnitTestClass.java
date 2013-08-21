@@ -190,4 +190,10 @@ public abstract class JUnitTestClass implements ITestClass {
     public ITestNGMethod[] getAfterTestConfigurationMethods() {
         return EMPTY_METHODARRAY;
     }
+
+    @Override
+    public boolean isMixedWith(Class clazz)
+    {
+        return false;
+    };
 }

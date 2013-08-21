@@ -1,8 +1,6 @@
 package org.testng;
 
 import com.beust.jcommander.Parameter;
-import com.beust.jcommander.converters.CommaParameterSplitter;
-
 import org.testng.collections.Lists;
 
 import java.util.ArrayList;
@@ -134,8 +132,7 @@ public class CommandLineArgs {
   public String slave;
 
   public static final String METHODS = "-methods";
-  @Parameter(names = METHODS, description = "Comma separated of test methods",
-      splitter = CommaParameterSplitter.class)
+
   public List<String> commandLineMethods = new ArrayList<String>();
 
   public static final String SUITE_THREAD_POOL_SIZE = "-suitethreadpoolsize";
