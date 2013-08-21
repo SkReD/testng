@@ -82,8 +82,7 @@ public class MethodInvocationHelper {
       }
     }
 
-    def methodName = thisMethod.getName();
-    return instance."$methodName"(*parameters);
+    return instance."${thisMethod.getName()}"(*parameters);
   }
 
   protected static Iterator<Object[]> invokeDataProvider(Object instance, Method dataProvider,
