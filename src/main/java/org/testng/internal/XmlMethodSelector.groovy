@@ -15,6 +15,7 @@ import org.testng.TestNGException;
 import org.testng.collections.ListMultiMap;
 import org.testng.collections.Lists;
 import org.testng.collections.Maps;
+import org.testng.util.GroovyClassHelper;
 import org.testng.xml.XmlClass;
 import org.testng.xml.XmlInclude;
 
@@ -104,7 +105,7 @@ public class XmlMethodSelector implements IMethodSelector {
       // Only add this method if it belongs to an included group and not
       // to an excluded group
       //
-      {
+      label1: {
         boolean isIncludedInGroups = isIncluded(groups, m_includedGroups.values());
         boolean isExcludedInGroups = isExcluded(groups, m_excludedGroups.values());
 
@@ -125,11 +126,9 @@ public class XmlMethodSelector implements IMethodSelector {
         //
         Method method = tm.getMethod();
         Class methodClass = method.getDeclaringClass();
-        String fullMethodName =  methodClass.getName()
-                + "."
-                + method.getName();
+        String fullMethodName =  methodClass.getName() + "." + method.getName();
 
-        String[] fullyQualifiedMethodName = new String[] { fullMethodName };
+        String[] fullyQualifiedMethodName = [ fullMethodName ];
 
         //
         // Iterate through all the classes so we can gather all the included and
@@ -139,13 +138,11 @@ public class XmlMethodSelector implements IMethodSelector {
           // Only consider included/excluded methods that belong to the same class
           // we are looking at
           Class cls = xmlClass.getSupportClass();
-          if(!assignable(methodClass, cls)) {
+          if(!GroovyClassHelper.isAssignableFrom(cls, methodClass)) {
             continue;
           }
 
-          List<String> includedMethods =
-              createQualifiedMethodNames(xmlClass, toStringList(xmlClass.getIncludedMethods()));
-          boolean isIncludedInMethods = isIncluded(fullyQualifiedMethodName, includedMethods);
+          boolean isIncludedInMethods = isIncluded((String[])[method.getName()], toStringList(xmlClass.getIncludedMethods()));
           List<String> excludedMethods = createQualifiedMethodNames(xmlClass,
               xmlClass.getExcludedMethods());
           boolean isExcludedInMethods = isExcluded(fullyQualifiedMethodName, excludedMethods);
@@ -168,7 +165,7 @@ public class XmlMethodSelector implements IMethodSelector {
     return result;
   }
 
-  @SuppressWarnings({"unchecked"})
+  @SuppressWarnings(["unchecked"])
   private boolean assignable(Class sourceClass, Class targetClass) {
     return sourceClass.isAssignableFrom(targetClass) || targetClass.isAssignableFrom(sourceClass);
   }
@@ -217,7 +214,7 @@ public class XmlMethodSelector implements IMethodSelector {
     while (null != cls) {
       for (String im : methods) {
         String methodName = im;
-        Method[] allMethods = cls.getDeclaredMethods();
+        Method[] allMethods = GroovyClassHelper.getAllMethods(cls);
         Pattern pattern = Pattern.compile(methodName);
         for (Method m : allMethods) {
           if (pattern.matcher(m.getName()).matches()) {
@@ -235,9 +232,9 @@ public class XmlMethodSelector implements IMethodSelector {
     return className + "." + methodName;
   }
 
-  private void checkMethod(Class<?> c, String methodName) {
+  private void checkMethod(Class c, String methodName) {
     Pattern p = Pattern.compile(methodName);
-    for (Method m : c.getMethods()) {
+    for (Method m : GroovyClassHelper.getAllMethods(c)) {
       if (p.matcher(m.getName()).matches()) {
         return;
       }
@@ -307,8 +304,8 @@ public class XmlMethodSelector implements IMethodSelector {
     for (String group : groups) {
       for (Object o : list) {
         String regexpStr = o.toString();
-        boolean match = Pattern.matches(regexpStr, group);
-        if (match) {
+        if (regexpStr == group || Pattern.matches(regexpStr, group))
+        {
           return true;
         }
       }

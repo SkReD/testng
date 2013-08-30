@@ -8,11 +8,10 @@ import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Lists;
 import org.testng.internal.annotations.AnnotationHelper;
 import org.testng.internal.annotations.IAnnotationFinder;
+import org.testng.util.GroovyClassHelper;
 import org.testng.xml.XmlTest;
 
-import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Method
 
 /**
  * The default strategy for finding test methods:  look up
@@ -102,13 +101,13 @@ public class TestNGMethodFinder implements ITestMethodFinder {
   private ITestNGMethod[] findConfiguration(final Class clazz, final int configurationType) {
     List<ITestNGMethod> vResult = Lists.newArrayList();
 
-    Set<Method> methods = ClassHelper.getAvailableMethods(clazz);
+    def methods = GroovyClassHelper.getAllMethods(clazz);
 
-    for (Method m : methods) {
-      IConfigurationAnnotation configuration = AnnotationHelper.findConfiguration(m_annotationFinder, m);
+    methods.each {
+      IConfigurationAnnotation configuration = AnnotationHelper.findConfiguration(m_annotationFinder, it);
 
       if (null == configuration) {
-        continue;
+        return;
       }
 
       boolean create = false;
@@ -171,7 +170,7 @@ public class TestNGMethodFinder implements ITestMethodFinder {
       if(create) {
         addConfigurationMethod(clazz,
                                vResult,
-                               m,
+                               it,
                                isBeforeSuite,
                                isAfterSuite,
                                isBeforeTest,
@@ -213,7 +212,7 @@ public class TestNGMethodFinder implements ITestMethodFinder {
                                       String[] afterGroups,
                                       Object instance)
   {
-    if(method.getDeclaringClass().isAssignableFrom(clazz)) {
+    if(GroovyClassHelper.isAccessibleFrom(clazz, method)) {
       ITestNGMethod confMethod = new ConfigurationMethod(new ConstructorOrMethod(method),
                                                          m_annotationFinder,
                                                          isBeforeSuite,
