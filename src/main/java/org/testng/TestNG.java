@@ -25,18 +25,11 @@ import java.util.jar.JarFile;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import groovy.lang.GroovyClassLoader;
 import org.testng.annotations.ITestAnnotation;
 import org.testng.collections.Lists;
 import org.testng.collections.Maps;
-import org.testng.internal.ClassHelper;
-import org.testng.internal.Configuration;
-import org.testng.internal.DynamicGraph;
-import org.testng.internal.IConfiguration;
-import org.testng.internal.IResultListener2;
-import org.testng.internal.OverrideProcessor;
-import org.testng.internal.SuiteRunnerMap;
-import org.testng.internal.Utils;
-import org.testng.internal.Version;
+import org.testng.internal.*;
 import org.testng.internal.annotations.DefaultAnnotationTransformer;
 import org.testng.internal.annotations.IAnnotationFinder;
 import org.testng.internal.annotations.JDK15AnnotationFinder;
@@ -948,7 +941,7 @@ public class TestNG {
       Method loadMethod;
       if (m_serviceLoaderClassLoader != null) {
         parameters.add(m_serviceLoaderClassLoader);
-        loadMethod = c.getMethod("load", Class.class, ClassLoader.class);
+        loadMethod = c.getMethod("load", Class.class, GroovyClassLoader.class);
       } else {
         loadMethod = c.getMethod("load", Class.class);
       }
@@ -1966,7 +1959,7 @@ public class TestNG {
   }
 
   /** Add a class loader to the searchable loaders. */
-  public void addClassLoader(final ClassLoader loader) {
+  public void addClassLoader(final TestNGClassLoader loader) {
     if (loader != null) {
       ClassHelper.addClassLoader(loader);
     }

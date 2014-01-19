@@ -1,5 +1,6 @@
 package org.testng.util
 
+import org.codehaus.groovy.reflection.CachedClass
 import org.codehaus.groovy.reflection.MixinInMetaClass
 
 import java.lang.reflect.Method
@@ -20,6 +21,12 @@ class GroovyClassHelper {
       methods = methods.plus(it.mixinClass.methods.collect{ it.cachedMethod });
     };
 
+    def superclass = cls.getSuperclass()
+    if (superclass)
+    {
+      methods = methods.plus(getAllMethods(superclass))
+    }
+
     return methods;
   }
 
@@ -28,10 +35,21 @@ class GroovyClassHelper {
     return getAllMethods(cls).contains(method)
   }
 
+  static final CachedClass[] getAllMixins(Class cls)
+  {
+    CachedClass[] mixin = cls.getMetaClass().mixinClasses.collect{it.mixinClass};
+
+    def superclass = cls.getSuperclass()
+    if (superclass)
+    {
+      mixin = mixin.plus(getAllMixins(superclass))
+    }
+
+    return mixin
+  }
+
   static final boolean isAssignableFrom(Class cls, Class assigned)
   {
-    def mixin = cls.getMetaClass().mixinClasses.collect { it.mixinClass.name };
-
-    return assigned.isAssignableFrom(cls) || mixin.contains(assigned.name)
+    return assigned.isAssignableFrom(cls) || getAllMixins(cls).collect{it.name}.contains(assigned.name)
   }
 }

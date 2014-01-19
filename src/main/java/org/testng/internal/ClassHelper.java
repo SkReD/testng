@@ -1,5 +1,6 @@
 package org.testng.internal;
 
+import groovy.lang.GroovyClassLoader;
 import org.testng.IClass;
 import org.testng.IMethodSelector;
 import org.testng.IObjectFactory;
@@ -32,10 +33,10 @@ public final class ClassHelper {
   private static final String JUNIT_4_TESTRUNNER = "org.testng.junit.JUnit4TestRunner";
 
   /** The additional class loaders to find classes in. */
-  private static final List<ClassLoader> m_classLoaders = new Vector<ClassLoader>();
+  private static final List<TestNGClassLoader> m_classLoaders = new Vector<TestNGClassLoader>();
 
   /** Add a class loader to the searchable loaders. */
-  public static void addClassLoader(final ClassLoader loader) {
+  public static void addClassLoader(final TestNGClassLoader loader) {
     m_classLoaders.add(loader);
   }
 
@@ -77,8 +78,8 @@ public final class ClassHelper {
    * @return the class or null if the class is not found.
    */
   public static Class<?> forName(final String className) {
-    Vector<ClassLoader> allClassLoaders = new Vector<ClassLoader>();
-    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    Vector<GroovyClassLoader> allClassLoaders = new Vector<GroovyClassLoader>();
+      TestNGClassLoader contextClassLoader = new TestNGClassLoader();
     if (contextClassLoader != null) {
       allClassLoaders.add(contextClassLoader);
     }
@@ -87,7 +88,7 @@ public final class ClassHelper {
     }
 
     int count = 0;
-    for (ClassLoader classLoader : allClassLoaders) {
+    for (GroovyClassLoader classLoader : allClassLoaders) {
       ++count;
       if (null == classLoader) {
         continue;

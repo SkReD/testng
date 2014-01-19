@@ -130,7 +130,7 @@ public abstract class BaseTestMethod implements ITestNGMethod {
   @Override
   public void setTestClass(ITestClass tc) {
     assert null != tc;
-    if (! tc.getRealClass().equals(m_method.getDeclaringClass()) && !tc.isMixedWith(m_method.getDeclaringClass())) {
+    if (!GroovyClassHelper.isAccessibleFrom(tc.getRealClass(), m_method.getMethod())) {
       assert m_method.getDeclaringClass().isAssignableFrom(tc.getRealClass()) :
         "\nMISMATCH : " + tc.getRealClass() + " " + m_method.getDeclaringClass();
     }

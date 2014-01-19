@@ -1,5 +1,6 @@
 package org.testng.internal;
 
+import groovy.lang.GroovyClassLoader;
 import org.testng.TestNG;
 import org.testng.collections.Lists;
 
@@ -30,10 +31,10 @@ public class PackageUtils {
   private static String[] s_testClassPaths;
 
   /** The additional class loaders to find classes in. */
-  private static final List<ClassLoader> m_classLoaders = new Vector<ClassLoader>();
+  private static final List<TestNGClassLoader> m_classLoaders = new Vector<TestNGClassLoader>();
 
   /** Add a class loader to the searchable loaders. */
-  public static void addClassLoader(final ClassLoader loader) {
+  public static void addClassLoader(final TestNGClassLoader loader) {
     m_classLoaders.add(loader);
   }
 
@@ -60,8 +61,8 @@ public class PackageUtils {
 
     Vector<URL> dirs = new Vector<URL>();
     // go through additional class loaders
-    Vector<ClassLoader> allClassLoaders = new Vector<ClassLoader>();
-    ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+    Vector<TestNGClassLoader> allClassLoaders = new Vector<TestNGClassLoader>();
+      TestNGClassLoader contextClassLoader = new TestNGClassLoader();
     if (contextClassLoader != null) {
       allClassLoaders.add(contextClassLoader);
     }
